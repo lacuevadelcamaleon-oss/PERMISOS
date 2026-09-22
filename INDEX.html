@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal de Validación Oficial - Huitzuco</title>
+<meta name="description" content="Portal de validación documental oficial del Municipio de Huitzuco de los Figueroa">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                institucional: "#8B263E",
+                dorado: "#B08D57",
+                oscuro: "#24171B"
+            }
+        }
+    }
+}
+</script>
+<style>
+:root {
+    --guinda: #8B263E;
+    --guinda-dark: #65192d;
+    --dorado: #B08D57;
+    --dorado-light: #d2b477;
+    --papel: #fcf9f2;
+    --texto: #222222;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: 
+        radial-gradient(circle at 10% 10%, rgba(176,141,87,.1), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(139,38,62,.08), transparent 40%),
+        #f0ece1;
+    color: var(--texto);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* TEXTURA TIPO PAPEL */
+.paper-texture {
+    background-color: var(--papel);
+    background-image: radial-gradient(rgba(80,50,20,.05) 1px, transparent 1px);
+    background-size: 6px 6px;
+}
+
+/* MARCA DE AGUA VÁLIDO */
+.demo-watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-25deg);
+    z-index: 999;
+    pointer-events: none;
+    font-size: clamp(60px, 12vw, 160px);
+    font-weight: 900;
+    letter-spacing: 15px;
+    color: rgba(139,38,62,.05);
+    white-space: nowrap;
+}
+
+/* BOTONES */
+.btn-main {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: var(--guinda);
+    color: white;
+    font-weight: 800;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    transition: all .25s ease;
+    box-shadow: 0 4px 15px rgba(139,38,62,.25);
+}
+
+.btn-main:hover {
+    background: var(--guinda-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139,38,62,.35);
+}
+
+/* DOCUMENTO */
+.document {
+    position: relative;
+    width: 100%;
+    max-width: 950px;
+    margin: auto;
+    background: var(--papel);
+    border: 1px solid rgba(139,38,62,.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,.15);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* BORDE INTERNO */
+.document::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(176,141,87,.6);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* HEADER DEL DOCUMENTO */
+.document-header {
+    position: relative;
+    padding: 35px 40px 25px 40px;
+    border-bottom: 3px solid var(--guinda);
+    background: linear-gradient(to bottom, rgba(139,38,62,.03), transparent);
+}
+
+.logo-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.logo-placeholder {
+    width: 120px;
+    height: 65px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--guinda);
+    font-weight: 900;
+    font-size: 10px;
+    line-height: 1.2;
+    border: 1px solid rgba(176,141,87,.5);
+    background: rgba(255,255,255,.6);
+    border-radius: 6px;
+}
+
+.logo-placeholder span {
+    display: block;
+    color: var(--dorado);
+    font-size: 7.5px;
+    margin-top: 3px;
+    letter-spacing: .5px;
+}
+
+.gov-title {
+    color: var(--guinda);
+    font-size: clamp(14px, 2.2vw, 20px);
+    font-weight: 900;
+    letter-spacing: .5px;
+    text-align: center;
+}
+
+.gov-subtitle {
+    margin-top: 3px;
+    color: #555;
+    font-size: clamp(10px, 1.4vw, 12px);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.gov-section {
+    margin-top: 2px;
+    color: var(--guinda);
+    font-size: clamp(11px, 1.6vw, 13px);
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+/* CONTENIDO */
+.document-content {
+    position: relative;
+    z-index: 2;
+    padding: 30px 45px 40px;
+}
+
+.document-title {
+    text-align: center;
+    color: var(--guinda);
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 900;
+    letter-spacing: .5px;
+    margin-bottom: 4px;
+}
+
+.document-subtitle {
+    text-align: center;
+    color: #444;
+    font-size: clamp(13px, 2vw, 16px);
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.document-validity-banner {
+    text-align: center;
+    color: var(--dorado);
+    font-size: clamp(16px, 2.5vw, 22px);
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.legal-text {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #444;
+    text-align: justify;
+    margin-bottom: 25px;
+    background: rgba(176,141,87,.05);
+    padding: 12px 15px;
+    border-left: 3px solid var(--dorado);
+    border-radius: 0 6px 6px 0;
+}
+
+/* TABLA REDONDEADA Y PROFESIONAL */
+.info-table-container {
+    background: white;
+    border: 1px solid #d4cbb3;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,.03);
+    margin-bottom: 25px;
+}
+
+.info-table-header {
+    background: var(--guinda);
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 10px 18px;
+    text-transform: uppercase;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.info-cell {
+    padding: 12px 18px;
+    border-bottom: 1px solid #eae2d0;
+    border-right: 1px solid #eae2d0;
+}
+
+.info-cell:nth-child(even) {
+    border-right: none;
+}
+
+.info-cell:nth-last-child(1), .info-cell:nth-last-child(2) {
+    border-bottom: none;
+}
+
+.info-label {
+    display: block;
+    color: #666;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.info-value {
+    color: #111;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+/* FOLIO BANNER */
+.folio-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(139,38,62,.08), rgba(176,141,87,.1));
+    border: 1px solid rgba(139,38,62,.25);
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+}
+
+.folio-banner-title {
+    color: var(--guinda);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.folio-banner-number {
+    color: var(--guinda);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+/* SECCIÓN DE FIRMAS */
+.signatures-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    padding-top: 20px;
+}
+
+.signature-box {
+    text-align: center;
+    padding-top: 45px;
+    border-top: 1px solid #555;
+}
+
+.signature-name {
+    color: #111;
+    font-weight: 900;
+    font-size: 13px;
+}
+
+.signature-role {
+    color: #555;
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1.4;
+    font-weight: 700;
+}
+
+/* AVISO LEGAL INFERIOR */
+.footer-notice {
+    font-size: 9px;
+    line-height: 1.5;
+    color: #555;
+    text-align: justify;
+    border-top: 1px solid #d4cbb3;
+    padding-top: 15px;
+    margin-top: 20px;
+}
+
+/* FRANJA FINAL */
+.document-footer {
+    padding: 15px 30px;
+    background: var(--guinda);
+    color: white;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* PORTAL */
+.portal {
+    min-height: 100vh;
+    padding: 30px 15px;
+}
+
+.portal-header {
+    max-width: 950px;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.portal-brand {
+    color: var(--guinda);
+    font-weight: 900;
+    font-size: 17px;
+}
+
+.portal-sub {
+    color: #666;
+    font-size: 10px;
+    margin-top: 2px;
+}
+
+/* MODAL */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(20,10,13,.75);
+    backdrop-filter: blur(8px);
+}
+
+.modal.active {
+    display: flex;
+    animation: modalIn .25s ease;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--papel);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,.3);
+    border: 1px solid rgba(139,38,62,.2);
+}
+
+.modal-top {
+    padding: 25px;
+    text-align: center;
+    color: white;
+    background: var(--guinda);
+}
+
+.status-icon {
+    width: 60px;
+    height: 60px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,.15);
+    font-size: 28px;
+}
+
+.modal-top h2 {
+    margin-top: 12px;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: .5px;
+}
+
+.modal-body {
+    padding: 22px;
+}
+
+.validation-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5dad0;
+}
+
+.validation-row span:first-child {
+    color: #666;
+    font-size: 9.5px;
+    font-weight: 900;
+}
+
+.validation-row span:last-child {
+    color: #111;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: right;
+}
+
+.close-button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #222;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.close-button:hover {
+    background: #000;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* RESPONSIVE */
+@media(max-width: 750px) {
+    .portal {
+        padding: 15px 8px;
+    }
+    .portal-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .logo-row {
+        flex-direction: column;
+    }
+    .document-content {
+        padding: 20px 20px 30px;
+    }
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    .info-cell {
+        border-right: none;
+    }
+    .signatures-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .document::before {
+        inset: 8px;
+    }
+}
+
+/* PRINT */
+@media print {
+    @page {
+        size: A4;
+        margin: 6mm;
+    }
+    body {
+        background: white;
+    }
+    .portal-header,
+    .demo-watermark,
+    .modal,
+    .no-print {
+        display: none !important;
+    }
+    .portal {
+        padding: 0;
+    }
+    .document {
+        max-width: none;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+    }
+    .document::before {
+        display: block;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- MARCA DE AGUA VÁLIDO -->
+<div class="demo-watermark">
+    VÁLIDO
+</div>
+
+<div class="portal">
+
+    <!-- PORTAL HEADER -->
+    <header class="portal-header no-print">
+        <div>
+            <div class="portal-brand">
+                Portal de Validación Documental Oficial
+            </div>
+            <div class="portal-sub">
+                Huitzuco de los Figueroa, Guerrero
+            </div>
+        </div>
+
+        <div class="flex gap-2 flex-wrap">
+            <button onclick="openValidation()" class="btn-main">
+                ✓ VERIFICAR DOCUMENTO
+            </button>
+            <button onclick="window.print()" class="btn-main">
+                🖨 IMPRIMIR DOCUMENTO
+            </button>
+        </div>
+    </header>
+
+    <!-- DOCUMENTO PRINCIPAL -->
+    <main class="document paper-texture">
+
+        <!-- HEADER -->
+        <section class="document-header">
+            <div class="logo-row">
+                <div class="logo-placeholder">
+                    GUERRERO
+                    <span>TRANSITO</span>
+                </div>
+                <div>
+                    <div class="gov-title">
+                        H. AYUNTAMIENTO MUNICIPAL CONSTITUCIONAL
+                    </div>
+                    <div class="gov-subtitle">
+                        HUITZUCO DE LOS FIGUEROA, GUERRERO
+                    </div>
+                    <div class="gov-section">
+                        2024 - 2027 · DIRECCIÓN DE TRÁNSITO MUNICIPAL
+                    </div>
+                </div>
+                <div class="logo-placeholder">
+                    HUITZUCO
+                    <span>AYUNTAMIENTO</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTENT -->
+        <section class="document-content">
+
+            <h1 class="document-title">
+                PERMISO PROVISIONAL PARA CIRCULAR
+            </h1>
+            <div class="document-subtitle">
+                SIN PLACAS POR TRÁMITE DE EMPLACAMIENTO
+            </div>
+            <div class="document-validity-banner">
+                VÁLIDO POR 30 DÍAS
+            </div>
+
+            <!-- TEXTO LEGAL -->
+            <div class="legal-text">
+                En ejercicio de la facultad que me confieren los preceptos 29 de la Ley de Tránsito y Vialidad del Estado de Guerrero, en correlación con el artículo 2A, 119 y 122 del Reglamento de la Ley de Tránsito y Vialidad del Estado de Guerrero, me permito extenderles que, al vehículo que a continuación se describe, se le ha expedido y autorizado un Permiso Temporal para Circular sin Placas y sin Tarjeta de Circulación durante el período.
+            </div>
+
+            <!-- FOLIO BANNER -->
+            <div class="folio-banner">
+                <div>
+                    <span class="folio-banner-title">FOLIO DE REGISTRO OFICIAL</span>
+                    <div style="font-size: 10px; color: #555; font-weight: 700; margin-top: 2px;">VIGENCIA: 18 DE AGOSTO DE 2025 AL 16 DE SEPTIEMBRE DE 2023</div>
+                </div>
+                <div class="folio-banner-number">
+                    HTZ-BB2613
+                </div>
+            </div>
+
+            <!-- TABLA DE INFORMACIÓN CON BORDES REDONDEADOS Y ESTILO PROFESIONAL -->
+            <div class="info-table-container">
+                <div class="info-table-header">
+                    DATOS GENERALES DEL PERMISO Y VEHÍCULO
+                </div>
+                <div class="info-grid">
+                    <div class="info-cell">
+                        <span class="info-label">Expedición</span>
+                        <span class="info-value">18 DE AGOSTO DE 2025</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Vencimiento</span>
+                        <span class="info-value">16 DE SEPTIEMBRE DE 2025</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Nombre del Propietario</span>
+                        <span class="info-value">JOSE JULIAN AGUILAR NAVARRO</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Tipo de Trámite</span>
+                        <span class="info-value">REGISTRO OFICIAL AUTORIZADO</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Marca</span>
+                        <span class="info-value">JEEP</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Línea</span>
+                        <span class="info-value">GRAND CHEROKEE</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Año / Modelo</span>
+                        <span class="info-value">2012</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">Color</span>
+                        <span class="info-value">GRIS PLATA</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">No. de Motor</span>
+                        <span class="info-value">HECHO EN USA</span>
+                    </div>
+                    <div class="info-cell">
+                        <span class="info-label">No. de Serie</span>
+                        <span class="info-value">1C4RJFAT9CC3O6813</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="font-size: 10px; font-weight: 800; color: #444; margin-bottom: 15px; text-align: center;">
+                Por lo que, atentamente a ustedes se les brinda todas las facilidades necesarias a su conductor para circular libremente día y en cualquier hora durante el periodo señalado.
+            </div>
+
+            <div style="text-align: center; font-size: 11px; font-weight: 900; color: var(--guinda); letter-spacing: 1px; margin-top: 15px; margin-bottom: 5px;">
+                ATENTAMENTE:
+            </div>
+
+            <!-- FIRMAS -->
+            <div class="signatures-container">
+                <div class="signature-box">
+                    <div class="signature-name">
+                        DRA. NÁJERA NÁJERA
+                    </div>
+                    <div class="signature-role">
+                        Jueza Municipal / Juez Tránsito Conciliatorio
+                    </div>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-name">
+                        LIC. ROSA LÓPEZ MORA
+                    </div>
+                    <div class="signature-role">
+                        Directora de Tránsito Municipal
+                    </div>
+                </div>
+            </div>
+
+            <!-- AVISO LEGAL INFERIOR -->
+            <div class="footer-notice">
+                <b>Nota:</b> La autenticidad de este documento podrá ser verificada a través del sistema oficial. Adicionalmente, podrá verificarse vía telefónica al 7331168900 para verificar el servicio particular. La falsificación, alteración o uso indebido de este documento oficial, se sanciona y penada por la ley de tres veces hasta seis meses de prisión y una multa de ciento ochenta a trescientos noventa y/o de veintidos a ciento diez días de salario, y si se tratara de falsificación (I) material o ideológica de documentos, para el caso de vehículos nacionales, los datos contenidos en este oficio, referentes a la marca, submarca, modelo y motor del vehículo, deberán coincidir con los registros de la factura o identificación del propietario, caso contrario, este oficio no tiene validez.
+            </div>
+
+            <div style="text-align: center; font-size: 10px; font-weight: 900; color: #666; margin-top: 15px;">
+                DIRECCIÓN DE TRÁNSITO DEL AYUNTAMIENTO MUNICIPAL<br>
+                DE HUITZUCO DE LOS FIGUEROA, GUERRERO - MÉXICO. Tel. 7771155900
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="document-footer">
+            VÁLIDO EN TODA LA REPÚBLICA MEXICANA · HUITZUCO DE LOS FIGUEROA
+        </footer>
+
+    </main>
+</div>
+
+<!-- MODAL DE VERIFICACIÓN -->
+<div id="validationModal" class="modal">
+    <div class="modal-card">
+        <div class="modal-top">
+            <div class="status-icon">✓</div>
+            <h2>DOCUMENTO VÁLIDO</h2>
+            <div style="margin-top:4px; font-size:10px; opacity:.85; font-weight: 700;">
+                REGISTRO OFICIAL VERIFICADO Y ACTIVO
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="validation-row">
+                <span>FOLIO OFICIAL</span>
+                <span>HTZ-BB2613</span>
+            </div>
+            <div class="validation-row">
+                <span>PROPIETARIO</span>
+                <span>JOSE JULIAN AGUILAR NAVARRO</span>
+            </div>
+            <div class="validation-row">
+                <span>VEHÍCULO</span>
+                <span>JEEP GRAND CHEROKEE 2012</span>
+            </div>
+            <div class="validation-row">
+                <span>VIGENCIA</span>
+                <span>18/08/2025 - 16/09/2025</span>
+            </div>
+
+            <div style="margin-top:18px; padding:12px; background:#e8f5e9; border:1px solid #c8e6c9; border-radius:8px; color:#2e7d32; font-size:10.5px; line-height:1.4; text-align:center; font-weight:700;">
+                ✔ ESTE REGISTRO CUENTA CON PLENA VALIDEZ OFICIAL Y SE ENCUENTRA LEGALMENTE AUTORIZADO.
+            </div>
+
+            <button onclick="closeValidation()" class="close-button">
+                CERRAR VENTANA
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openValidation() {
+    document.getElementById("validationModal").classList.add("active");
+}
+
+function closeValidation() {
+    document.getElementById("validationModal").classList.remove("active");
+}
+
+document.getElementById("validationModal").addEventListener("click", function(event) {
+    if (event.target === this) {
+        closeValidation();
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+        closeValidation();
+    }
+});
+</script>
+
+</body>
+</html>
