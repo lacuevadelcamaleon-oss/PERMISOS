@@ -7,6 +7,23 @@
 <meta name="description" content="Portal de validación documental oficial del Municipio de Huitzuco de los Figueroa">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
+/* ==========================================================
+   CONFIGURACIÓN RÁPIDA: Modifica estos datos para cada página
+   ========================================================== */
+const datosPermiso = {
+    folio: "HTZ-BB2613",
+    propietario: "JOSE JULIAN AGUILAR NAVARRO",
+    marca: "JEEP",
+    linea: "GRAND CHEROKEE",
+    modelo: "2012",
+    color: "GRIS PLATA",
+    motor: "HECHO EN USA",
+    serie: "1C4RJFAT9CC3O6813",
+    expedicion: "18 DE AGOSTO DE 2025",
+    vencimiento: "16 DE SEPTIEMBRE DE 2025",
+    vigenciaTexto: "18 DE AGOSTO DE 2025 AL 16 DE SEPTIEMBRE DE 2025"
+};
+
 tailwind.config = {
     theme: {
         extend: {
@@ -637,14 +654,12 @@ body {
             <div class="folio-banner">
                 <div>
                     <span class="folio-banner-title">FOLIO DE REGISTRO OFICIAL</span>
-                    <div style="font-size: 10px; color: #555; font-weight: 700; margin-top: 2px;">VIGENCIA: 18 DE AGOSTO DE 2025 AL 16 DE SEPTIEMBRE DE 2023</div>
+                    <div id="txtVigenciaBanner" style="font-size: 10px; color: #555; font-weight: 700; margin-top: 2px;"></div>
                 </div>
-                <div class="folio-banner-number">
-                    HTZ-BB2613
-                </div>
+                <div id="txtFolioBanner" class="folio-banner-number"></div>
             </div>
 
-            <!-- TABLA DE INFORMACIÓN CON BORDES REDONDEADOS Y ESTILO PROFESIONAL -->
+            <!-- TABLA DE INFORMACIÓN -->
             <div class="info-table-container">
                 <div class="info-table-header">
                     DATOS GENERALES DEL PERMISO Y VEHÍCULO
@@ -652,15 +667,15 @@ body {
                 <div class="info-grid">
                     <div class="info-cell">
                         <span class="info-label">Expedición</span>
-                        <span class="info-value">18 DE AGOSTO DE 2025</span>
+                        <span id="txtExpedicion" class="info-value"></span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Vencimiento</span>
-                        <span class="info-value">16 DE SEPTIEMBRE DE 2025</span>
+                        <span id="txtVencimiento" class="info-value"></span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Nombre del Propietario</span>
-                        <span class="info-value">JOSE JULIAN AGUILAR NAVARRO</span>
+                        <span id="txtPropietario" class="info-value"></span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Tipo de Trámite</span>
@@ -668,27 +683,27 @@ body {
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Marca</span>
-                        <span class="info-value">JEEP</span>
+                        <span id="txtMarca" class="info-value"></span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Línea</span>
-                        <span class="info-value">GRAND CHEROKEE</span>
+                        <span id="txtLinea" class="info-value"></span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Año / Modelo</span>
-                        <span class="info-value">2012</span>
+                        <span id="txtModelo" class="info-value"></span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">Color</span>
-                        <span class="info-value">GRIS PLATA</span>
+                        <span id="txtColor" class="info-value"></span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">No. de Motor</span>
-                        <span class="info-value">HECHO EN USA</span>
+                        <span id="txtMotor" class="info-value"></span>
                     </div>
                     <div class="info-cell">
                         <span class="info-label">No. de Serie</span>
-                        <span class="info-value">1C4RJFAT9CC3O6813</span>
+                        <span id="txtSerie" class="info-value"></span>
                     </div>
                 </div>
             </div>
@@ -755,19 +770,19 @@ body {
         <div class="modal-body">
             <div class="validation-row">
                 <span>FOLIO OFICIAL</span>
-                <span>HTZ-BB2613</span>
+                <span id="modalFolio"></span>
             </div>
             <div class="validation-row">
                 <span>PROPIETARIO</span>
-                <span>JOSE JULIAN AGUILAR NAVARRO</span>
+                <span id="modalPropietario"></span>
             </div>
             <div class="validation-row">
                 <span>VEHÍCULO</span>
-                <span>JEEP GRAND CHEROKEE 2012</span>
+                <span id="modalVehiculo"></span>
             </div>
             <div class="validation-row">
                 <span>VIGENCIA</span>
-                <span>18/08/2025 - 16/09/2025</span>
+                <span id="modalVigencia"></span>
             </div>
 
             <div style="margin-top:18px; padding:12px; background:#e8f5e9; border:1px solid #c8e6c9; border-radius:8px; color:#2e7d32; font-size:10.5px; line-height:1.4; text-align:center; font-weight:700;">
@@ -782,6 +797,27 @@ body {
 </div>
 
 <script>
+// INYECTAR AUTOMÁTICAMENTE LOS DATOS EN LA PÁGINA
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("txtFolioBanner").innerText = datosPermiso.folio;
+    document.getElementById("txtVigenciaBanner").innerText = "VIGENCIA: " + datosPermiso.vigenciaTexto;
+    document.getElementById("txtExpedicion").innerText = datosPermiso.expedicion;
+    document.getElementById("txtVencimiento").innerText = datosPermiso.vencimiento;
+    document.getElementById("txtPropietario").innerText = datosPermiso.propietario;
+    document.getElementById("txtMarca").innerText = datosPermiso.marca;
+    document.getElementById("txtLinea").innerText = datosPermiso.linea;
+    document.getElementById("txtModelo").innerText = datosPermiso.modelo;
+    document.getElementById("txtColor").innerText = datosPermiso.color;
+    document.getElementById("txtMotor").innerText = datosPermiso.motor;
+    document.getElementById("txtSerie").innerText = datosPermiso.serie;
+
+    // Datos para la ventana modal
+    document.getElementById("modalFolio").innerText = datosPermiso.folio;
+    document.getElementById("modalPropietario").innerText = datosPermiso.propietario;
+    document.getElementById("modalVehiculo").innerText = datosPermiso.marca + " " + datosPermiso.linea + " " + datosPermiso.modelo;
+    document.getElementById("modalVigencia").innerText = datosPermiso.expedicion + " - " + datosPermiso.vencimiento;
+});
+
 function openValidation() {
     document.getElementById("validationModal").classList.add("active");
 }
